@@ -8,7 +8,7 @@ class Station
   after_validation :geocode          # geocoder wants this but we already have all coordinates
   acts_as_gmappable
 
-  field :id,          :type => Integer
+  field :stn,         :type => Integer
   field :address,     :type => String
   field :city,        :type => String
   field :country,     :type => String
@@ -19,7 +19,7 @@ class Station
   field :location,    :type => Array, :geo => true, :lat => :latitude, :lng => :longitude
   field :coordinates, :type => Array, :lat => :latitude, :lng => :longitude
   has_many :measurements
-  embeds_many :datasetones
+  has_many :datasetones
   index(
     [
       [ :id, Mongo::ASCENDING ],
@@ -30,7 +30,7 @@ class Station
 
   scope :dataset_one, where(:datasetones.exists => true)
 
-  attr_accessible :id, :address, :city, :country, :latitude, :longitude, :elevation, :gmaps
+  attr_accessible :stn, :address, :city, :country, :latitude, :longitude, :elevation, :gmaps, :location, :coordinates
 
   
   geo_index :location
@@ -39,19 +39,9 @@ class Station
     address
   end
 
-  #Maybe we should move this to a partial
-  #I don't think you're supposed to have view data in your model but the docs suggest this is the way to go
+  #If i delete this it doesn't work..
+  #don't judge me
   def gmaps4rails_infowindow
-  	title = "<h5>#{city.capitalize}, #{country.capitalize}<h5>"
-    if measurements.length > 0
-      temp = " <p><b>Temperature: </b>#{measurements.last.temp.round(1)}&deg;</p>" 
-      clouds = "<p> <b>Cloud coverage: </b>#{measurements.last.cloudcoverage.round(1)}%</p>"
-      js = "onClick=getChart('#{id}');"
-      link = "<a href='#' id='#{id}' #{js}>Show chart</a>"
-      title + temp + clouds + link
-    else
-      title + "<p>No data available</p>"
-    end
   end
 
   def gmaps4rails_title

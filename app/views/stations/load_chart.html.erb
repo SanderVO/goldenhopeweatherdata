@@ -1,14 +1,14 @@
-<div class="modal-backdrop fade in"></div>
+pi<div class="modal-backdrop fade in"></div>
 <div id="chart-modal" class="modal hide fade in" style="display: block; ">
   <div class="modal-header">
     <a href="#" class="close" id="close">×</a>
-    <h3><%= "#{@station.city.capitalize}, #{@station.country.capitalize}" %></h3>
+    <h3><%= link_to "#{@station.city.capitalize}, #{@station.country.capitalize}", @station %></h3>
   </div>
   <div class="modal-body">
-    <p> <%= render 'chart' %> <p>
+    <p> <%= render 'realtimechart' %> <p>
     <div id="temperature_chart" style="width:500px; height:300px;"></div>
   </div>
     <div class="modal-footer">
-    <p> Last measument: <%= time_ago_in_words(@measurement.date) %> ago </p>
+    <p>Average cloudcoverage calculated each minute</p>
   </div>
 </div>
