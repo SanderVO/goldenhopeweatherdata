@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  force_ssl
+  
   before_filter :login_required
 
   def new

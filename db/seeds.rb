@@ -65,4 +65,4 @@ end
 
 		
 #create an admin user, uncomment when running for the first time
-# User.create!(:username => 'admin', :password => 'admin', :confirm_password => 'admin', :email => 'admin@goldenhope.com')
+#User.create!(:username => 'admin', :password => 'admin', :confirm_password => 'admin', :email => 'admin@goldenhope.com')
