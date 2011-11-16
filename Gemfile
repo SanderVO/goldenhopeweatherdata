@@ -23,7 +23,9 @@ gem "mongoid", "~> 2.3"
 
 gem 'mongoid_geo'
 
-gem "bson_ext"		
+gem "bson_ext"	
+
+gem "rack-ssl"	
 
 gem 'client_side_validations'
 
