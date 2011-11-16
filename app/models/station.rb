@@ -20,7 +20,7 @@ class Station
   field :gmaps,       :type => Boolean
   field :location,    :type => Array, :geo => true, :lat => :latitude, :lng => :longitude
   field :coordinates, :type => Array, :lat => :latitude, :lng => :longitude
-  has_many :measurements
+  has_many :datasetones
   embeds_many :datasetones
   embeds_many :datasettwos
   index(
@@ -43,6 +43,8 @@ class Station
   # => fetches all stations that have a dataset on 11-11-11
   #
   scope :dataset_one_on_date, lambda {|date| where("datasetones.date" => {'$gte' => date - 1.day, '$lt' => date }) }
+
+  scope :dataset_two_on_date, lambda {|date| where("datasettwos.date" => {'$gte' => date - 1.day, '$lt' => date }) }
   
   geo_index :location
 

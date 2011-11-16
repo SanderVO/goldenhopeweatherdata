@@ -4,20 +4,21 @@ class DatasetonesController < ApplicationController
 	def index
     if params[:date].present?
       if params[:search].present?
-        @stations = Station.dataset_one_on_date(params[:date].to_time).any_of({:country => params[:search].upcase}, {:city => params[:search].upcase}).page(params[:page]).per(25)
+        stations = Station.dataset_one_on_date(params[:date].to_time + 1.day).any_of({:country => params[:search].upcase}, {:city => params[:search].upcase})
       else
-        @stations = Station.dataset_one_on_date(params[:date].to_time).page(params[:page]).per(25)
+        stations = Station.dataset_one_on_date(params[:date].to_time + 1.day)
       end
     elsif params[:search].present?
-      @stations = Station.dataset_one_on_date(Time.now).any_of({:country => params[:search].upcase}, {:city => params[:search].upcase}).page(params[:page]).per(25)
+      stations = Station.dataset_one_on_date(Time.now).any_of({:country => params[:search].upcase}, {:city => params[:search].upcase})
     else
-      @stations = Station.dataset_one_on_date(Time.now).page(params[:page]).per(25)
+      stations = Station.dataset_one_on_date(Time.now)
     end
+    @stations = stations.page(params[:page]).per(25)
   end
 
   def show
   	@station = Station.find(params[:id])
-    @measurement = @station.datasetones.last
+    @measurements = @station.datasetones
     @all_temps = []
     @all_prcp = []
     #build graph data
@@ -27,21 +28,26 @@ class DatasetonesController < ApplicationController
       end
   end
 
+  #creates a downloadable xml file of al the stations that have a dataset one on the selected date
+  #if no date argument is given in the search it defaults to todays datasets
   def datasetone_to_xml
     if params[:date].present?
+      date = params[:date]
       if params[:search].present?
-        @stations = Station.dataset_one_on_date(params[:date].to_time).any_of({:country => params[:search].upcase}, {:city => params[:search].upcase}).page(params[:page]).per(25)
+        datasetone = Station.dataset_one_on_date(params[:date].to_time + 1.day).any_of({:country => params[:search].upcase}, {:city => params[:search].upcase})
       else
-        @stations = Station.dataset_one_on_date(params[:date].to_time).page(params[:page]).per(25)
+        datasetone = Station.dataset_one_on_date(params[:date].to_time + 1.day)
       end
     elsif params[:search].present?
-      @stations = Station.dataset_one_on_date(Time.now).any_of({:country => params[:search].upcase}, {:city => params[:search].upcase}).page(params[:page]).per(25)
+      date = Date.today
+      datasetone = Station.dataset_one_on_date(Time.now).any_of({:country => params[:search].upcase}, {:city => params[:search].upcase})
     else
-      @stations = Station.dataset_one_on_date(Time.now).page(params[:page]).per(25)
+      date = Date.today
+      datasetone = Station.dataset_one_on_date(Time.now).page(params[:page])
     end
-    send_data @stations.to_xml,
+    send_data datasetone.without(:datasettwos, :datasetthrees).to_xml,
     :type => 'text/xml; charset=UTF-8;',
-    :disposition => "attachment; filename=stations.xml"
+    :disposition => "attachment; filename= iWeather Dataset one #{date}.xml"
   end
 
 end
