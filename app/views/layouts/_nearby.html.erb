@@ -1,0 +1,11 @@
+  </div>
+  <div class="span4">
+  <h2> Nearby stations </h2>
+  <% if Station.near(@station.address, 25).any? %>
+	  <% for station in @station.nearbys(5000) %>
+  		<li><%= link_to station.address, station %> (<%= station.distance.round(2) %> miles)</li>
+		<% end %>
+	<% else %>
+		<p> No stations found in a radius of 25km. </p>
+	<% end %>
+</div>
